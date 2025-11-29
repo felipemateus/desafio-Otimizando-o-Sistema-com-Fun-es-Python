@@ -1,12 +1,19 @@
 
 
-def show_menu():
+def mostrar_menu():
     menu = """
 
     [d] Depositar
     [s] Sacar
     [e] Extrato
+    [cu] Criar Usuário
+    [cc] Criar Conta Corrente
+    
+    [mu] Mostrar Usuários
+    [mc] Mostrar Contas
+
     [q] Sair
+
 
     => """
 
@@ -79,15 +86,38 @@ def extrato(saldo, /, *, extrato):
 # O endereço é ma string com o formato: logradouro, número - bairro - cidade/sigla estado
 # Deve ser armazenado somente os nḿeros do CPF.
 #Não podemos cadastrar 2 usuários com o mesmo CPF.
-def criar_usuario():
-    pass
+def criar_usuario(usuarios):
+    nome =input("Informe o Nome do Usuário: ")
+    data_nascimento =input("Informe o Data de nascimento do Usuário: ")
+    cpf =input("Informe o CPF do Usuário (somente números): ")
+    #verifica o cpf
+    if cpf in usuarios:
+        print("Já existe um usuário com esse CPF!")
+        return
+    endereco =input("Informe o Endereço do Usuário (logradouro, número - bairro - cidade/sigla estado): ")  
+
+    usuarios.append({"nome": nome, "data_nascimento": data_nascimento, "cpf": cpf, "endereco": endereco})
+    print("Usuário criado com sucesso!")
 
 # O programa deve armazenar contas em uma lista, uma conta é composta por :agência, número da conta e o usário.
 #O Nmero da conta é sequencial, iniciado em 1.
 # O número da agência é fixo: 0001
 # O Usuário pode ter mais de uma conta, mas uma conta pertence a apenas um usário.
-def criar_conta_corrente():
-    pass
+def criar_conta_corrente(contas, usuarios):
+    agência = "0001"
+    cpf = input("Informe o CPF do Usuário para vincular a conta: ")
+    #verifica se o usário existe
+    for usuario in usuarios:
+        if usuario["cpf"] == cpf:
+            numero_conta = len(contas) + 1
+            contas.append({"agência": agência, "número_conta": numero_conta, "usuário": usuario})
+            print("Conta criada com sucesso!")
+            return
+    print("Usuário não encontrado, não foi possível criar a conta.")
+
+
+
+#funções axiliares
   
 
 
@@ -97,11 +127,13 @@ def main():
     extrato = ""
     numero_saques = 0
     LIMITE_SAQUES = 3
+    usuarios = []
+    contas = []
 
 
 
     while True:
-        opcao = show_menu()
+        opcao = mostrar_menu()
 
         if opcao == "d":
             valor=float(input("Informe o valor do depósito: "))
@@ -113,7 +145,21 @@ def main():
             
 
         elif opcao == "e":
-          extrato(saldo, extrato=extrato)
+            extrato(saldo, extrato=extrato)
+
+        elif opcao == "cu":#cria usuario 
+            criar_usuario(usuarios)
+
+        elif opcao == "cc":#cria conta corrente
+            criar_conta_corrente(contas, usuarios)
+
+        elif opcao == "mu":#mostra usuarios
+            for usuario in usuarios:
+                print(usuario)
+                
+        elif opcao == "mc":#mostra contas
+            for conta in contas:
+                print(conta)
 
         elif opcao == "q":
             break
