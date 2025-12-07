@@ -20,30 +20,32 @@ class Conta:
     def depositar():
         pass
 
-
-class PessoaFisica:
-    def __init__(self, cpf, nome):
-        _cpf = cpf
-        _nome = nome
-
-class Cliente(PessoaFisica):
-    def __init__(self, cpf, nome, endereco, contas:list):
-        super().__init__(cpf, nome)
-        _endereco = endereco
-        _contas = contas
+class ContaCorrente(Conta):
+    def __init__(self,numero,agencia,Cliente ):
+        super().__init__(numero,agencia,Cliente )
+        _limite = 500
+        _limite_saques = 3
 
 
-    
+class PessoaFisica(Cliente):
+    def __init__(self, cpf, nome, data_nascimento,endereco):
+        super().__init__(endereco)
+        self._data_nascimento = data_nascimento
+        self._cpf = cpf
+        self._nome = nome
+
+class Cliente():
+    def __init__(self, endereco):
+        self._endereco = endereco
+        self._contas = []
+    def realizar_transacao(conta ,transacao):
+        transacao.registrar(conta)
+    def adicionar_conta(Conta):
+        _contas.append(Conta)
 
 
 
-
-
-
-
-
-
-class Transacao:
+class Transacao(ABC):
     @abstractmethod
     def registrar(Conta):
         pass
