@@ -97,21 +97,30 @@ class ContaCorrente(Conta):
     def __str__(self):
         return super().__str__() + f"\nLimite: {self._limite}\nLimite Saques: {self._limite_saques}"
 
-class PessoaFisica(Cliente):
-    def __init__(self, cpf, nome, data_nascimento,endereco):
-        super().__init__(endereco)
-        self._data_nascimento = data_nascimento
-        self._cpf = cpf
-        self._nome = nome
-
 class Cliente():
     def __init__(self, endereco):
         self._endereco = endereco
         self._contas = []
     def realizar_transacao(conta ,transacao):
         transacao.registrar(conta)
-    def adicionar_conta(Conta):
-        _contas.append(Conta)
+    def adicionar_conta(self,Conta):
+        self._contas.append(Conta)
+    def __str__(self):
+        return f" \nEndereço: {self._endereco}"
+
+
+class PessoaFisica(Cliente):
+    def __init__(self, cpf, nome, data_nascimento,endereco):
+        super().__init__(endereco)
+        self._data_nascimento = data_nascimento
+        self._cpf = cpf
+        self._nome = nome
+    @property
+    def cpf(self):
+        return self._cpf
+    
+    def __str__(self):
+        return  f"\nNome: {self._nome}\nCPF: {self._cpf}\nData de Nascimento: {self._data_nascimento}" + super().__str__()
 
 
 
@@ -218,6 +227,7 @@ def menu():
     [e]\tExtrato
     [nc]\tNova conta
     [lc]\tListar contas
+    [lcc]\tListar clientes cadastrados
     [nu]\tNovo usuário
     [q]\tSair
     => """
@@ -268,11 +278,11 @@ def exibir_extrato(saldo, /, *, extrato):
     print("==========================================")
 
 
-def criar_usuario(usuarios):
+def criar_clientes(clientes):
     cpf = input("Informe o CPF (somente número): ")
-    usuario = filtrar_usuario(cpf, usuarios)
+    cliente = filtrar_clientes(cpf, clientes)
 
-    if usuario:
+    if cliente:
         print("\n@@@ Já existe usuário com esse CPF! @@@")
         return
 
@@ -280,14 +290,16 @@ def criar_usuario(usuarios):
     data_nascimento = input("Informe a data de nascimento (dd-mm-aaaa): ")
     endereco = input("Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): ")
 
-    usuarios.append({"nome": nome, "data_nascimento": data_nascimento, "cpf": cpf, "endereco": endereco})
+    clientes.append(PessoaFisica(cpf, nome, data_nascimento, endereco))
+
+    #cliente.append({"nome": nome, "data_nascimento": data_nascimento, "cpf": cpf, "endereco": endereco})
 
     print("=== Usuário criado com sucesso! ===")
 
 
-def filtrar_usuario(cpf, usuarios):
-    usuarios_filtrados = [usuario for usuario in usuarios if usuario["cpf"] == cpf]
-    return usuarios_filtrados[0] if usuarios_filtrados else None
+def filtrar_clientes(cpf, clientes):
+    clientes_filtrados = [cliente for cliente in clientes if cliente.cpf == cpf]
+    return clientes_filtrados[0] if clientes_filtrados else None
 
 
 def criar_conta(agencia, numero_conta, usuarios):
@@ -311,16 +323,16 @@ def listar_contas(contas):
         print("=" * 100)
         print(textwrap.dedent(linha))
 
+def listar_clientes_cadastrados(clientes: list[Cliente]):
+    print("\n=== Lista de Clientes Cadastrados ===")
+    for cliente in clientes :
+        print(cliente)
+
+
 
 def main():
-    LIMITE_SAQUES = 3
-    AGENCIA = "0001"
 
-    saldo = 0
-    limite = 500
-    extrato = ""
-    numero_saques = 0
-    usuarios = []
+    clientes = []
     contas = []
 
     while True:
@@ -347,7 +359,7 @@ def main():
             exibir_extrato(saldo, extrato=extrato)
 
         elif opcao == "nu":
-            criar_usuario(usuarios)
+            criar_clientes(clientes)
 
         elif opcao == "nc":
             numero_conta = len(contas) + 1
@@ -358,6 +370,9 @@ def main():
 
         elif opcao == "lc":
             listar_contas(contas)
+
+        elif opcao == "lcc":
+            listar_clientes_cadastrados(clientes)
 
         elif opcao == "q":
             break
